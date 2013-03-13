@@ -19,7 +19,7 @@ The project was written using Python v. 2.7.3. There's no guarantee it'll work o
 
 Create the folder in which you'll want to store your project, let's call it PROJECT_HOME. It has to be for this project only, as it will be bloated with files downloaded from the repository.
 
-Enable version control (run in PROJECT_HOME)
+Enable version control (run in PROJECT_HOME)  
 `git init`
 
 Download project files from the repository
