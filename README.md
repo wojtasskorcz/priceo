@@ -18,9 +18,13 @@ Table of Contents
 The project was written using Python v. 2.7.3. There's no guarantee it'll work on any other version, although it doesn't use any advanced Python mechanics, so it should.
 
 Create the folder in which you'll want to store your project, let's call it PROJECT_HOME. It has to be for this project only, as it will be bloated with files downloaded from the repository.
+
 Enable version control (run in PROJECT_HOME)
+
 *git init*
+
 Download project files from the repository
+
 *git pull https://github.com/wojtasskorcz/priceo.git*
 
 When the files have been downloaded create a virtualenv in PROJECT_HOME.
