@@ -11,7 +11,6 @@ Table of Contents
 2. Usage notes.
 3. Python deployment manual for future use.
 
-
 1. Installation.
 ----------------
 
@@ -45,5 +44,14 @@ Import your the project into workspace. *RMB on the project folder -> Properties
 Go to *priceo.settings* and set the paths according to your local system, especially in *DATABASES, MEDIA_ROOT, STATICFILES_DIRS, TEMPLATE_DIRS*. Configuring the paths you should only change the part before "django-templates/priceo/" to point to the folder, where you put the "django-templates" folder downloaded from the repository. The rest of the path (after "django-templates/priceo/") should be left intact. As to the database, you're free to choose where you want to place it.  
 *RMB on the project folder -> Django -> Sync DB*, create a new superuser  
 *RMB on the project folder -> Run As -> PyDev: Django*  
-Go to "localhost:8000" in your web browser to see, if the project works.
+Go to "localhost:8000" in your web browser to see, if the project works.  
+
+2. Usage notes.
+---------------
+
+You should now have the project with an empty database up and running. You can either start adding records to the database going to "localhost:8000/admin/" in your web browser, or automatically fill the database with records predefined in the file *priceo.test*. To do that do the following  
+*RMB on the project folder -> Django -> Shell with django environment*  
+In the shell run the following commands  
+`from priceo.test import test`  
+`test()`  
 
