@@ -60,3 +60,29 @@ The project is very minimalist in presentation and serves only as a showcase for
 3. Python deployment manual for future use.
 -------------------------------------------
 
+When starting a new project configure it with virtualenv and appropriate Eclipse python interpreter, as described in the Installation section. This will make the project independend and unaware of the global python installation and libraries. It's the best way to avoid conflicts with other projects, the project is self-standing this way.
+
+When developing an untracked project and wanting to upload it to GitHub (or any other repo) do the following.  
+Create a new repo through the website, let's name it *test* here. Go to the project directory, let's call it PROJECT_HOME, and run the following:  
+`git init`  
+`git remote add --track master origin https://github.com/wojtasskorcz/test.git`  
+`git add .`  
+`git commit -a -m "initial import"`  
+`git pull --rebase`  
+Before pushing add to *.gitignore* all the files and patterns you don't want to upload. For Python with virtualenv it will certainly be all the virtualenv folders (they are useless on other machines due to broken symbolic links after upload), so the file might look like this:  
+  *.log
+  *.pot
+  *.pyc
+  local_settings.py
+  bin
+  include
+  lib
+  local
+  sqlite.db
+Also, copy any external resources, like django templates, to your project directory and add appropriate admonition in the readme as to where to put them after pulling.  
+Create the file with required libraries by running in PROJECT_HOME (in context of virtualenv)  
+`pip freeze > requirements.txt`  
+This way the person that later pulls the project, will be able to follow the procedures of the first section of this readme (i.e. to run ``pip install -r requirements.txt``)  
+Now you can safely push the project
+`git push`  
+
