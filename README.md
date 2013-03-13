@@ -21,7 +21,7 @@ Create the folder in which you'll want to store your project, let's call it PROJ
 
 Enable version control (run in PROJECT_HOME)
 
-*git init*
+`git init`
 
 Download project files from the repository
 
