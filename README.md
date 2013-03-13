@@ -55,3 +55,8 @@ In the shell run the following commands
 `from priceo.test import test`  
 `test()`  
 
+The project is very minimalist in presentation and serves only as a showcase for the backend. Feel free to test all its features, propose new ones, improve the old ones and report bugs.
+
+3. Python deployment manual for future use.
+-------------------------------------------
+
