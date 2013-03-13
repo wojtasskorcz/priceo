@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load my_tags %}
+
+{% block title %}
+ | {{ product.name }}
+{% endblock %}
+
+{% block content %}
+	<h3>{{ product.name }}</h3>
+	{{ product.description|linebreaks }} <br/>
+	<img src="{{MEDIA_URL}}{{ product.get_photo }}"><br/>
+
+	{% if user_rating %}
+		{% if user_rating.get_rating_display == "good" %}
+			<span class="thumbs_up chosen">{{ product.get_thumbs_up }}</span> / <span class="thumbs_down">{{ product.get_thumbs_down }}</span>
+			<a href="{% url 'product_voteup' product.id %}"><button disabled>Good!</button></a>
+			<a href="{% url 'product_votedown' product.id %}"><button>Bad!</button></a>
+		{% else %}
+			<span class="thumbs_up">{{ product.get_thumbs_up }}</span> / <span class="thumbs_down chosen">{{ product.get_thumbs_down }}</span>
+			<a href="{% url 'product_voteup' product.id %}"><button>Good!</button></a>
+			<a href="{% url 'product_votedown' product.id %}"><button disabled>Bad!</button></a>
+		{% endif %}
+	{% else %}
+		<span class="thumbs_up">{{ product.get_thumbs_up }}</span> / <span class="thumbs_down">{{ product.get_thumbs_down }}</span>
+		{% if user.is_authenticated %}
+			<a href="{% url 'product_voteup' product.id %}"><button>Good!</button></a>
+			<a href="{% url 'product_votedown' product.id %}"><button>Bad!</button></a>
+			You haven't voted on this product.
+		{% else %}
+			<a href="{% url 'login' %}?next={{ request.get_full_path }}">Log in</a> to vote.
+		{% endif %}
+	{% endif %}
+
+	{% get_sorted_shops product.id as shops %}
+	{% if shops %}
+		<h4>Selled by:</h4>
+		<table>
+			{% for shop in shops %}
+				<tr>
+					<td><a href="{% url 'shop_details' shop.id %}">{{ shop.name }}</a></td>
+					<td><a href="{% get_url product.id shop.id %}">{% get_price product.id shop.id %} zł</a></td>
+					<td><span class="thumbs_up">{{ shop.get_thumbs_up }}</span> / <span class="thumbs_down">{{ shop.get_thumbs_down }}</span></td>
+				</tr>
+			{% endfor %}
+		</table>
+	{% else %}
+		<h4>No shop is selling this product at the time.</h4>
+	{% endif %}
+
+	<h3>Comments</h3>
+	{% if not product.comments.all %}
+		<h4>There are no comments yet, be the first one to comment!.</h4>
+	{% else %}
+		{% for comment in product.comments.all %}
+		<div class="comment">
+			<p class="comment_header"><span class="author">{{ comment.author }}</span> said on {{ comment.pub_date }}:</p>
+			<p class="comment_text">{{ comment.text|safe }}</>
+		</div>
+		{% endfor %}
+	{% endif %}
+
+	{% if user.is_authenticated %}
+		<h4>Post your comment:</h4>
+		<form action="" method="post">
+			{% csrf_token %}
+			<table>
+				{{ form }}
+				<tr>
+					<td></td><td><input type="submit" value="Post!" /></td>
+				</tr>
+			</table>		
+			<input type="hidden" name="next" value="{{ request.get_full_path }}" />
+	  	</form>
+	{% else %}
+		<a href="{% url 'login' %}?next={{ request.get_full_path }}">Log in</a> to comment.
+	{% endif %}
+
+{% endblock %}
+
+{% block sidebar %}
+	{% get_latest_products 10 from priceo.Category product.category.id as latest %}
+	<h3>Latest in {{ product.category.name }}</h3>
+	<ul>
+		{% for product in latest %}
+			<li><a href="{% url 'product_details' product.id %}">{{ product.name }}</a></li>
+		{% endfor %}
+	</ul>
+{% endblock %}
+
+{% block footer %}
+{% get_random_featured_products RECOMMENDED_PRODUCTS_NUMBER from priceo.Category product.category.id as featured %}
+<table class="recommended">
+	<tr>
+		{% for product in featured %}
+			<td><a href="{% url 'product_details' product.id %}"><img src="{{MEDIA_URL}}{{ product.get_photo }}"></a></td>
+		{% endfor %}
+	</tr>
+	<tr>
+		{% for product in featured %}
+			<td><a href="{% url 'product_details' product.id %}">{{ product.name }}</a></td>
+		{% endfor %}
+	</tr>
+	<tr>
+		{% for product in featured %}
+			<td>{{ product.lowest_possible_price }}{% if product.lowest_possible_price != "N/A" %} zł{% endif %}</td>
+		{% endfor %}
+	</tr>
+	<tr>
+		{% for product in featured %}
+			<td><span class="thumbs_up">{{ product.get_thumbs_up }}</span> / <span class="thumbs_down">{{ product.get_thumbs_down }}</span></td>
+		{% endfor %}
+	</tr>
+</table>
+{% endblock %}

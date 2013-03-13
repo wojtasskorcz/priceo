@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load my_tags %}
+{% load append_to_get %}
+
+{% block title %}
+ | Search results
+{% endblock %}
+
+{% block content %}
+	<h3>Search results</h3>
+	<table>
+		{% for product in results %}
+			<tr>
+				<td><a href="{% url 'product_details' product.id %}">{{ product.name }}</a><br/>
+					{{ product.lowest_possible_price }}{% if product.lowest_possible_price != "N/A" %} zł{% endif %}<br/>
+					<span class="thumbs_up">{{ product.get_thumbs_up }}</span> / <span class="thumbs_down">{{ product.get_thumbs_down }}</span>
+				<td>{{ product.description }}</td>
+			</tr>
+		{% endfor %}
+	</table>
+
+	<div class="pagination">
+	    <span class="step-links">
+	        {% if results.has_previous %}
+	            <a href="{% append_to_get page=results.previous_page_number %}">previous</a>
+	        {% endif %}
+
+	        <span class="current">
+	            Page {{ results.number }} of {{ results.paginator.num_pages }}.
+	        </span>
+
+	        {% if results.has_next %}
+	            <a href="{% append_to_get page=results.next_page_number %}">next</a>
+	        {% endif %}
+	        {{ query }} {{ category }}
+	    </span>
+	</div>
+
+	Order by: 
+	{% if order_by == "-pub_date" %}
+		<a href="{% url 'search_results' 'pub_date' %}?{{ request.GET.urlencode }}"}>date</a>
+	{% else %}
+		<a href="{% url 'search_results' '-pub_date' %}?{{ request.GET.urlencode }}"}>date</a> 
+	{% endif %}
+	{% if order_by == "name" %}
+		<a href="{% url 'search_results' '-name' %}?{{ request.GET.urlencode }}"}>name</a>
+	{% else %}
+		<a href="{% url 'search_results' 'name' %}?{{ request.GET.urlencode }}"}>name</a>
+	{% endif %}
+	{% if order_by == "price" %}
+		<a href="{% url 'search_results' '-price' %}?{{ request.GET.urlencode }}"}>price</a>
+	{% else %}
+		<a href="{% url 'search_results' 'price' %}?{{ request.GET.urlencode }}"}>price</a>
+	{% endif %}
+	{% if order_by == "-rating" %}
+		<a href="{% url 'search_results' 'rating' %}?{{ request.GET.urlencode }}"}>rating</a>
+	{% else %}
+		<a href="{% url 'search_results' '-rating' %}?{{ request.GET.urlencode }}"}>rating</a>
+	{% endif %}
+
+{% endblock %}

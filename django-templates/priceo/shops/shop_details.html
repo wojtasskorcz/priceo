@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load my_tags %}
+
+{% block title %}
+ | {{ shop.name }}
+{% endblock %}
+
+{% block content %}
+	<h3>{{ shop.name }}</h3>
+	{{ shop.description|linebreaks }}
+	<img src="{{MEDIA_URL}}{{ shop.get_photo }}"> <br/>
+
+	{% if user_rating %}
+		{% if user_rating.get_rating_display == "good" %}
+			<span class="thumbs_up chosen">{{ shop.get_thumbs_up }}</span> / <span class="thumbs_down">{{ shop.get_thumbs_down }}</span>
+			<a href="{% url 'shop_voteup' shop.id %}"><button disabled>Good!</button></a>
+			<a href="{% url 'shop_votedown' shop.id %}"><button>Bad!</button></a>
+		{% else %}
+			<span class="thumbs_up">{{ shop.get_thumbs_up }}</span> / <span class="thumbs_down chosen">{{ shop.get_thumbs_down }}</span>
+			<a href="{% url 'shop_voteup' shop.id %}"><button>Good!</button></a>
+			<a href="{% url 'shop_votedown' shop.id %}"><button disabled>Bad!</button></a>
+		{% endif %}
+	{% else %}
+		<span class="thumbs_up">{{ shop.get_thumbs_up }}</span> / <span class="thumbs_down">{{ shop.get_thumbs_down }}</span>
+		{% if user.is_authenticated %}
+			<a href="{% url 'shop_voteup' shop.id %}"><button>Good!</button></a>
+			<a href="{% url 'shop_votedown' shop.id %}"><button>Bad!</button></a>
+			You haven't voted on this shop.
+		{% else %}
+			<a href="{% url 'login' %}?next={{ request.get_full_path }}">Log in</a> to vote.
+		{% endif %}
+	{% endif %}
+
+	{% if shop.products.all %}
+		<h4>Sells:</h4>
+		<table>
+			{% for product in shop.products.all %}
+				<tr>
+					<td><a href="{% url 'product_details' product.id %}">{{ product.name }}</a></td>
+					<td><a href="{% get_url product.id shop.id %}">{% get_price product.id shop.id %} zł</a>
+					<td><span class="thumbs_up">{{ product.get_thumbs_up }}</span> / <span class="thumbs_down">{{ product.get_thumbs_down }}</span></td>
+				</tr>
+			{% endfor %}
+		</table>
+	{% else %}
+		<h4>This shop doesn't sell anything at the moment</h4>
+	{% endif %}
+
+	<h3>Comments</h3>
+	{% if not shop.comments.all %}
+		<h4>There are no comments yet, be the first one to comment!.</h4>
+	{% else %}
+		{% for comment in shop.comments.all %}
+		<div class="comment">
+			<p class="comment_header"><span class="author">{{ comment.author }}</span> said on {{ comment.pub_date }}:</p>
+			<p class="comment_text">{{ comment.text|safe }}</p>
+		</div>
+		{% endfor %}
+	{% endif %}
+
+	{% if user.is_authenticated %}
+		<h4>Post your comment:</h4>
+		<form action="" method="post">
+			{% csrf_token %}
+			<table>
+				{{ form }}
+				<tr>
+					<td></td><td><input type="submit" value="Post!" /></td>
+				</tr>
+			</table>		
+			<input type="hidden" name="next" value="{{ request.get_full_path }}" />
+	  	</form>
+	{% else %}
+		<a href="{% url 'login' %}?next={{ request.get_full_path }}">Log in</a> to comment.
+	{% endif %}
+{% endblock %}
+
+{% block sidebar %}
+	{% get_latest_products RECOMMENDED_PRODUCTS_NUMBER from priceo.Shop shop.id as latest %}
+	<h3>Latest in {{ shop.name }}</h3>
+	<ul>
+		{% for product in latest %}
+			<li><a href="{% url 'product_details' product.id %}">{{ product.name }}</a></li>
+		{% endfor %}
+	</ul>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% load my_tags %}
+		
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<title>Priceo{% block title %}{% endblock %}</title>
+		<link rel="stylesheet" href="/static/main_style.css" type="text/css" />
+    	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+		</script>
+		<script>
+			$(document).ready(function() {
+			  	$("#query").click(function() {
+			  		if ($(this).val() == "{{ SEARCH_DEFAULT_TEXT }}") {
+			  			$(this).val("");
+			  		}
+			  	});
+			  	$("#query").blur(function() {
+			  		if ($(this).val() == "") {
+			  			$(this).val("{{ SEARCH_DEFAULT_TEXT }}");
+			  		}
+			  	});
+				$("#comment").click(function() {
+			  		if ($(this).val() == "{{ COMMENT_DEFAULT_TEXT }}") {
+			  			$(this).val("");
+			  		}
+			  	});
+			  	$("#comment").blur(function() {
+			  		if ($(this).val() == "") {
+			  			$(this).val("{{ COMMENT_DEFAULT_TEXT }}");
+			  		}
+			  	});
+			});
+		</script>
+	</head>
+	<body class="{% block bodyclass %}{% endblock %}">
+		<div id="header">
+			<h1 id="branding"><a href="{% url 'home' %}">Priceo</a></h1>
+			{% show_login_link %}
+			{% get_search_form as search_form %}
+			<form action="{% url 'search_results' order_by='pub_date' %}" method="get" class="search_bar">
+				{% csrf_token %}	
+				{% for field in search_form %}
+					{{ field }}
+				{% endfor %}
+				<input type="submit" value="Search!" />
+	  		</form>
+		</div>
+		
+		{% if message %}
+			<h3 class="message">{{ message }}</h3>
+		{% endif %}
+		
+		<div id="navigation">
+			{% show_categories_panel %}
+		</div>
+
+		<div id="content">
+			{% block content %}
+			{% endblock %}
+		</div>
+
+		<div id="sidebar">
+			{% block sidebar %}
+				{% get_latest_products LATEST_PRODUCTS_NUMBER from all as latest %}
+				<h3>Latest products</h3>
+				<ul>
+					{% for product in latest %}
+						<li><a href="{% url 'product_details' product.id %}">{{ product.name }}</a></li>
+					{% endfor %}
+				</ul>
+			{% endblock %}
+		</div>
+
+		<div id="footer">
+			<h2>Recommended</h2>
+			{% block footer %}
+			{% get_random_featured_products RECOMMENDED_PRODUCTS_NUMBER from all as featured %}
+			<table class="recommended">
+				<tr>
+					{% for product in featured %}
+						<td><a href="{% url 'product_details' product.id %}"><img src="{{MEDIA_URL}}{{ product.get_photo }}"></a></td>
+					{% endfor %}
+				</tr>
+				<tr>
+					{% for product in featured %}
+						<td><a href="{% url 'product_details' product.id %}">{{ product.name }}</a></td>
+					{% endfor %}
+				</tr>
+				<tr>
+					{% for product in featured %}
+						<td>{{ product.lowest_possible_price }}{% if product.lowest_possible_price != "N/A" %} zł{% endif %}</td>
+					{% endfor %}
+				</tr>
+				<tr>
+					{% for product in featured %}
+						<td><span class="thumbs_up">{{ product.get_thumbs_up }}</span> / <span class="thumbs_down">{{ product.get_thumbs_down }}</span></td>
+					{% endfor %}
+				</tr>
+			</table>
+			{% endblock %}
+		</div>
+	</body>
+</html>

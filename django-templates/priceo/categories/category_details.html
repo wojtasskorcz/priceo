@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load my_tags %}
+
+{% block title %}
+ | {{ category.name }}
+{% endblock %}
+
+{% block content %}
+	<h3>Products in category {{ category.name }}</h3>
+	<table>
+		{% for product in products %}
+			<tr>
+				<td><a href="{% url 'product_details' product.id %}">{{ product.name }}</a><br/>
+					{{ product.lowest_possible_price }}{% if product.lowest_possible_price != "N/A" %} zł{% endif %}<br/>
+					<span class="thumbs_up">{{ product.get_thumbs_up }}</span> / <span class="thumbs_down">{{ product.get_thumbs_down }}</span>
+				<td>{{ product.description }}</td>
+			</tr>
+		{% endfor %}
+	</table>
+
+	<div class="pagination">
+	    <span class="step-links">
+	        {% if products.has_previous %}
+	            <a href="?page={{ products.previous_page_number }}">previous</a>
+	        {% endif %}
+
+	        <span class="current">
+	            Page {{ products.number }} of {{ products.paginator.num_pages }}.
+	        </span>
+
+	        {% if products.has_next %}
+	            <a href="?page={{ products.next_page_number }}">next</a>
+	        {% endif %}
+	    </span>
+	</div>
+
+	Order by: 
+	{% if order_by == "-pub_date" %}
+		<a href="{% url 'category_details' category.id 'pub_date' %}"}>date</a>
+	{% else %}
+		<a href="{% url 'category_details' category.id '-pub_date' %}"}>date</a>
+	{% endif %}
+	{% if order_by == "name" %}
+		<a href="{% url 'category_details' category.id '-name' %}"}>name</a>
+	{% else %}
+		<a href="{% url 'category_details' category.id 'name' %}"}>name</a>
+	{% endif %}
+	{% if order_by == "price" %}
+		<a href="{% url 'category_details' category.id '-price' %}"}>price</a>
+	{% else %}
+		<a href="{% url 'category_details' category.id 'price' %}"}>price</a>
+	{% endif %}
+	{% if order_by == "-rating" %}
+		<a href="{% url 'category_details' category.id 'rating' %}"}>rating</a>
+	{% else %}
+		<a href="{% url 'category_details' category.id '-rating' %}"}>rating</a>
+	{% endif %}
+
+{% endblock %}
+
+{% block sidebar %}
+	{% get_latest_products LATEST_PRODUCTS_NUMBER from priceo.Category category.id as latest %}
+	<h3>Latest in {{ category.name }}</h3>
+	<ul>
+		{% for product in latest %}
+			<li><a href="{% url 'product_details' product.id %}">{{ product.name }}</a></li>
+		{% endfor %}
+	</ul>
+{% endblock %}
+
+{% block footer %}
+{% get_random_featured_products RECOMMENDED_PRODUCTS_NUMBER from priceo.Category category.id as featured %}
+<table class="recommended">
+	<tr>
+		{% for product in featured %}
+			<td><a href="{% url 'product_details' product.id %}"><img src="{{MEDIA_URL}}{{ product.get_photo }}"></a></td>
+		{% endfor %}
+	</tr>
+	<tr>
+		{% for product in featured %}
+			<td><a href="{% url 'product_details' product.id %}">{{ product.name }}</a></td>
+		{% endfor %}
+	</tr>
+	<tr>
+		{% for product in featured %}
+			<td>{{ product.lowest_possible_price }}{% if product.lowest_possible_price != "N/A" %} zł{% endif %}</td>
+		{% endfor %}
+	</tr>
+	<tr>
+		{% for product in featured %}
+			<td><span class="thumbs_up">{{ product.get_thumbs_up }}</span> / <span class="thumbs_down">{{ product.get_thumbs_down }}</span></td>
+		{% endfor %}
+	</tr>
+</table>
+{% endblock %}
