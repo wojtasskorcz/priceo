@@ -70,15 +70,15 @@ Create a new repo through the website, let's name it *test* here. Go to the proj
 `git commit -a -m "initial import"`  
 `git pull --rebase`  
 Before pushing add to *.gitignore* all the files and patterns you don't want to upload. For Python with virtualenv it will certainly be all the virtualenv folders (they are useless on other machines due to broken symbolic links after upload), so the file might look like this:  
-  *.log
-  *.pot
-  *.pyc
-  local_settings.py
-  bin
-  include
-  lib
-  local
-  sqlite.db
+    *.log
+    *.pot
+    *.pyc
+    local_settings.py
+    bin
+    include
+    lib
+    local
+    sqlite.db
 Also, copy any external resources, like django templates, to your project directory and add appropriate admonition in the readme as to where to put them after pulling.  
 Create the file with required libraries by running in PROJECT_HOME (in context of virtualenv)  
 `pip freeze > requirements.txt`  
