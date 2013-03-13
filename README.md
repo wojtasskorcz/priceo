@@ -84,7 +84,7 @@ Before pushing add to *.gitignore* all the files and patterns you don't want to 
 Also, copy any external resources, like django templates, to your project directory and add appropriate admonition in the readme as to where to put them after pulling.  
 Create the file with required libraries by running in PROJECT_HOME (in context of virtualenv)  
 `pip freeze > requirements.txt`  
-This way the person that later pulls the project, will be able to follow the procedures of the first section of this readme (i.e. to run ``pip install -r requirements.txt``)  
+This way the person that later pulls the project will be able to follow the procedures of the first section of this readme (i.e. to run ``pip install -r requirements.txt``)  
 Now you can safely push the project
 `git push`  
 
