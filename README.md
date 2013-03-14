@@ -85,6 +85,6 @@ Also, copy any external resources, like django templates, to your project direct
 Create the file with required libraries by running in PROJECT_HOME (in context of virtualenv)  
 `pip freeze > requirements.txt`  
 This way the person that later pulls the project will be able to follow the procedures of the first section of this readme (i.e. to run ``pip install -r requirements.txt``)  
-Now you can safely push the project
+Now you can safely push the project  
 `git push`  
 
