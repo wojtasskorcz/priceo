@@ -66,9 +66,9 @@ When developing an untracked project and wanting to upload it to GitHub (or any 
 Create a new repo through the website, let's name it *test* here. Go to the project directory, let's call it PROJECT_HOME, and run the following:  
 `git init`  
 `git remote add --track master origin https://github.com/wojtasskorcz/test.git`  
+`git pull --rebase` Make sure there are no conflicts between the local and remote files. Otherwise you'll have to merge/resolve conflicts.  
 `git add .`  
 `git commit -a -m "initial import"`  
-`git pull --rebase`  
 Before pushing add to *.gitignore* all the files and patterns you don't want to upload. For Python with virtualenv it will certainly be all the virtualenv folders (they are useless on other machines due to broken symbolic links after upload), so the file might look like this:  
 
     *.log
